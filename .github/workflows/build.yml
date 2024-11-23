@@ -29,11 +29,13 @@ jobs:
           python -c "from transformers import ViTImageProcessor, ViTForImageClassification; ViTImageProcessor.from_pretrained('google/vit-base-patch16-224', local_files_only=False); ViTForImageClassification.from_pretrained('google/vit-base-patch16-224', local_files_only=False)"
           
       - name: Build with PyInstaller
+        shell: cmd
         run: |
-          pyinstaller --name="ImageClassifier" `
-                     --windowed `
-                     --onefile `
-                     --add-data "%USERPROFILE%\.cache\huggingface\hub;huggingface\hub" `
+          for /f "tokens=*" %%i in ('echo %USERPROFILE%\.cache\huggingface\hub') do set MODEL_PATH=%%i
+          pyinstaller --name="ImageClassifier" ^
+                     --windowed ^
+                     --onefile ^
+                     --add-data "%MODEL_PATH%;huggingface/hub" ^
                      classify_thread_ui.py
 
       - name: Upload Windows Build
