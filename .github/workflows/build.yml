@@ -24,12 +24,16 @@ jobs:
           pip install pyinstaller
           pip install transformers torch pillow PyQt5
           
+      - name: Download model
+        run: |
+          python -c "from transformers import ViTImageProcessor, ViTForImageClassification; ViTImageProcessor.from_pretrained('google/vit-base-patch16-224', local_files_only=False); ViTForImageClassification.from_pretrained('google/vit-base-patch16-224', local_files_only=False)"
+          
       - name: Build with PyInstaller
         run: |
           pyinstaller --name="ImageClassifier" `
                      --windowed `
                      --onefile `
-                     --add-data "vit-base-patch16-224;vit-base-patch16-224" `
+                     --add-data "%USERPROFILE%\.cache\huggingface\hub;huggingface\hub" `
                      classify_thread_ui.py
 
       - name: Upload Windows Build
@@ -54,12 +58,16 @@ jobs:
           pip install pyinstaller
           pip install transformers torch pillow PyQt5
           
+      - name: Download model
+        run: |
+          python -c "from transformers import ViTImageProcessor, ViTForImageClassification; ViTImageProcessor.from_pretrained('google/vit-base-patch16-224', local_files_only=False); ViTForImageClassification.from_pretrained('google/vit-base-patch16-224', local_files_only=False)"
+          
       - name: Build with PyInstaller
         run: |
           pyinstaller --name="ImageClassifier" \
                      --windowed \
                      --onefile \
-                     --add-data "vit-base-patch16-224:vit-base-patch16-224" \
+                     --add-data "$HOME/.cache/huggingface/hub:huggingface/hub" \
                      classify_thread_ui.py
 
       - name: Upload macOS Build
